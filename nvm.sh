@@ -1,74 +1,77 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[*] Installing nvm..."
+log() { printf '%s\n' "$*"; }
+
+log "[*] Installing nvm..."
 if [ ! -d "$HOME/.nvm" ]; then
   curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 else
-  echo "[i] nvm already installed"
+  log "[i] nvm already installed"
 fi
 
-# Load nvm
+# ----------------------------
+# Load nvm (nounset-safe)
+# ----------------------------
 export NVM_DIR="$HOME/.nvm"
 
-[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+# nvm is not fully nounset-safe in all code paths
+set +u
+# shellcheck disable=SC1090
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+# shellcheck disable=SC1090
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+set -u 2>/dev/null || true
 
-echo "[*] Verifying nvm..."
+log "[*] Verifying nvm..."
 command -v nvm >/dev/null || {
-  echo "[!] nvm not found in PATH"
+  log "[!] nvm not found in PATH (did nvm.sh load correctly?)"
   exit 1
 }
 
-echo "[*] Installing Node.js LTS..."
+# ----------------------------
+# Install + use Node LTS
+# ----------------------------
+log "[*] Installing Node.js LTS..."
+# Extra robust: keep nounset off while running nvm commands
+set +u
 nvm install --lts
 nvm use --lts
+set -u 2>/dev/null || true
 
-echo "[*] Node and npm versions:"
+log "[*] Node and npm versions:"
 node -v
 npm -v
 
-############################################
-# npm configuration
-############################################
-
-echo "[*] Creating npm-global directory (legacy step)..."
-mkdir -p "$HOME/.npm-global"
-
-echo "[*] Setting npm prefix (will be removed for nvm compatibility)..."
-npm config set prefix "$HOME/.npm-global"
-
-# Ensure PATH line exists (idempotent)
-if ! grep -q 'npm-global/bin' "$HOME/.bashrc"; then
-  echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> "$HOME/.bashrc"
-fi
-
-NODE_VERSION="$(node -v)"
-
-echo "[*] Removing npm prefix for nvm compatibility (Node $NODE_VERSION)..."
-nvm use --delete-prefix "$NODE_VERSION" --silent
-
-############################################
-# npm defaults
-############################################
-
-echo "[*] Applying npm defaults..."
+# ----------------------------
+# npm defaults (safe + useful)
+# ----------------------------
+log "[*] Applying npm defaults..."
 npm config set fund false
 npm config set audit true
-npm config set save-prefix='~'
+npm config set save-prefix '~'
 
-############################################
+# Ensure we are NOT using a custom prefix with nvm (avoid conflicts)
+if npm config get prefix 2>/dev/null | grep -q "\.npm-global"; then
+  log "[*] Removing npm custom prefix (nvm prefers its own prefix)..."
+  npm config delete prefix || true
+fi
+
+# ----------------------------
 # Verification
-############################################
-
-echo
-echo "====== VERIFICATION ======"
-echo "npm prefix:"
+# ----------------------------
+log ""
+log "====== VERIFICATION ======"
+log "node path:"
+command -v node || true
+log "node -v: $(node -v)"
+log "npm -v:  $(npm -v)"
+log ""
+log "npm prefix:"
 npm config get prefix
-
-echo
-echo "npm config list:"
+log ""
+log "npm config list:"
 npm config list
-
-echo
-echo "[✓] Installation complete"
-echo "Run command: source ~/.bashrc"
+log ""
+log "[✓] Installation complete"
+log "Tip: open a new terminal or run: source ~/.bashrc"
