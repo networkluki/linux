@@ -1,0 +1,39 @@
+ENG
+
+Common folders in Linux and what they are used for:
+
+/ (root): The root of the entire filesystem. All directories and files branch out from here.
+/bin: Essential commands and programs needed by the system, such as ls, cp, and mv.
+/sbin: System administration tools, such as fsck, ip, and reboot.
+/etc: System configuration files.
+/home: Users’ home directories containing personal files and settings.
+/root: The home directory of the root user.
+/var: Files that change frequently, such as logs and queues.
+/tmp: Temporary files that can be cleared.
+/usr: User programs and libraries, such as /usr/bin and /usr/lib.
+/lib: Shared libraries used by programs in /bin and /sbin.
+/opt: Optional third-party software.
+/dev: Device files representing hardware, such as disks and USB devices.
+/proc: A virtual filesystem containing information about processes and the kernel.
+/sys: Information about the kernel and hardware, used by system tools.
+/media: Mount points for removable media, such as USB drives.
+/mnt: Temporary mount points.
+
+SWE
+
+Vanliga mappar i Linux och vad de används till: 
+
+- / (root): Roten för hela filsystemet. Alla mappar och filer utgår härifrån. 
+- /bin: Grundläggande kommandon och program som behövs för systemet (t.ex. ls, cp, mv). 
+- /sbin: Systemadministrationsverktyg (t.ex. fsck, ip, reboot). - /etc: Systemets konfigurationsfiler. 
+- /home: Användarnas hemmappar med personliga filer och inställningar. - /root: Hemmapp för root-användaren. 
+- /var: Filer som ändras ofta, t.ex. loggar och köer. 
+- /tmp: Tillfälliga filer som kan rensas. 
+- /usr: Program och bibliotek för användare, t.ex. /usr/bin och /usr/lib. 
+- /lib: Delade bibliotek som används av program i /bin och /sbin. 
+- /opt: Tilläggsprogram från tredjepart. 
+- /dev: Enhetsfiler som representerar hårdvara (t.ex. diskar och USB). 
+- /proc: Virtuellt filsystem med information om processer och kernel. 
+- /sys: Information om kernel och hårdvara, används av systemverktyg. 
+- /media: Monteringspunkter för flyttbara media (t.ex. USB-minnen). 
+- /mnt: Tillfälliga monteringspunkter.
