@@ -146,6 +146,24 @@ if [[ "$PHASE" == "2" ]]; then
     # --- Final cleanup ---
     apt-get clean
 
+    # --- Clean up home directories for all non-root human users ---
+    getent passwd | awk -F: '$3 >= 1000 && $3 < 65534 { print $6 }' | while read -r HOMEDIR; do
+        [[ -d "$HOMEDIR" ]] || continue
+        echo "Cleaning home directory: $HOMEDIR"
+
+        rm -f "$HOMEDIR/.face" "$HOMEDIR/.face.icon"
+        rm -rf "$HOMEDIR/.cache/"*
+
+        rmdir "$HOMEDIR/Desktop" "$HOMEDIR/Documents" "$HOMEDIR/Downloads" \
+              "$HOMEDIR/Music" "$HOMEDIR/Pictures" "$HOMEDIR/Public" \
+              "$HOMEDIR/Templates" "$HOMEDIR/Videos" 2>/dev/null || true
+
+        # Remove GNOME config remnants
+        find "$HOMEDIR/.config" "$HOMEDIR/.local" -maxdepth 3 \
+            \( -iname '*gnome*' -o -iname '*nautilus*' -o -iname '*gdm*' \) \
+            -exec rm -rf {} + 2>/dev/null || true
+    done
+
     # --- Remove state file ---
     rm -f "$STATE_FILE"
 
