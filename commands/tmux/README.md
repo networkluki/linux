@@ -1,6 +1,6 @@
 # tmux Command Guide
 
-A practical Swedish guide to `tmux` for terminal workflows, Linux servers, SSH sessions, and persistent shell environments.
+A practical guide to `tmux` for terminal workflows, Linux servers, SSH sessions, and persistent shell environments.
 
 ## What is tmux?
 
