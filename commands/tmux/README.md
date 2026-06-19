@@ -24,7 +24,7 @@ This is especially useful for:
 
 ## Installation
 
-### Debian / Ubuntu
+### Linux
 ```bash
 sudo apt update
 sudo apt install tmux
